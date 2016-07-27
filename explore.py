@@ -50,6 +50,7 @@ def is_present(columns_name,categorical_name):
     else:
         raise ValueError(i+" is not present as a column in the data,Please check the name")
 
+#function removes any column with string values which cannt be plotted
 def clean_str_list(df,lst):
     print lst
     rem=[]
@@ -62,20 +63,27 @@ def clean_str_list(df,lst):
 
     for j in rem:
         lst.remove(j)
-    
+
     return lst
-def univariate_analysis_continous(cont_list,df,sub):
+
+def univariate_analysis_continous(cont_list,df,sub,COUNTER):
     # res = all(isinstance(n,str) for n in df["Age"])
     # print res
     # print isinstance(df["Name"][0],str)
+
     clean_cont_list = clean_str_list(df,cont_list)
     print clean_cont_list
-    for col in cont_list:
 
-        x = np.array(df[col])
-        y = x
-        plt.scatter(x,y)
-        plt.show()
+
+    for col in cont_list:
+        plt.subplot(3,4,COUNTER)
+        x = np.array(df[col].dropna())
+        plt.xlabel(col, fontsize=12)
+        plt.ylabel("count", fontsize=12)
+        plt.hist(x,bins=100)
+        COUNTER +=1
+
+    return plt,COUNTER
         # print x
 
 
@@ -97,7 +105,9 @@ def plot(data_input,data_output,categorical_name):
             category_dict,catg_list,cont_list = get_category(data_input,categorical_name,columns_name)
 
 
-        univariate_analysis_continous(cont_list,data_input,subplot)
+        plt,count = univariate_analysis_continous(cont_list,data_input,subplot,COUNTER)
+
+        plt.show()
         #The DataFrame is converted to numpy array
         data_input_new = dataframe_to_numpy(data_input)
         # print type(data_input_new)
