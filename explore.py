@@ -18,6 +18,8 @@ a = np.array(df)
 # print a.T.shape
 
 import matplotlib.pyplot as plt
+plt.style.use('ggplot')
+# plt.Figure(figsize=(100,100))
 
 PLOT_COLUMNS_SIZE = 3
 COUNTER = 1
@@ -71,14 +73,22 @@ def univariate_analysis_continous(cont_list,df,sub,COUNTER):
     # print res
     # print isinstance(df["Name"][0],str)
 
+
+    print df.describe()
     clean_cont_list = clean_str_list(df,cont_list)
     print clean_cont_list
-
-
     for col in cont_list:
+        summary = df[col].dropna().describe()
+        count = summary[0]
+        mean = summary[1]
+        std = summary[2]
+        count_50 = summary[5]
+        count_75 = summary[6]
+
         plt.subplot(3,4,COUNTER)
+        plt.title("mean "+str(np.float32(mean))+" std "+str(np.float32(std)))
         x = np.array(df[col].dropna())
-        plt.xlabel(col, fontsize=12)
+        plt.xlabel(col+"\n count "+str(count)+"\n50%: "+str(count_50)+" 75%: "+str(count_75), fontsize=12)
         plt.ylabel("count", fontsize=12)
         plt.hist(x,bins=100)
         COUNTER +=1
@@ -99,15 +109,17 @@ def plot(data_input,data_output,categorical_name):
         #Subplot(Total number of graphs)
         subplot = len(columns_name)
 
+
+
         #Checks if the categorical_name are present in the orignal dataframe columns.
         categorical_is_present = is_present(columns_name,categorical_name)
         if categorical_is_present:
             category_dict,catg_list,cont_list = get_category(data_input,categorical_name,columns_name)
 
 
-        plt,count = univariate_analysis_continous(cont_list,data_input,subplot,COUNTER)
+        plot,count = univariate_analysis_continous(cont_list,data_input,subplot,COUNTER)
 
-        plt.show()
+        plot.show()
         #The DataFrame is converted to numpy array
         data_input_new = dataframe_to_numpy(data_input)
         # print type(data_input_new)
