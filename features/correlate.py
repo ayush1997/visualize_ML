@@ -7,8 +7,8 @@ import numpy as np
 
 # df = pd.read_csv("train_new.csv")
 # df = pd.read_csv("train.csv")
-# df = pd.read_csv("Train_75Dkybb.csv")
-df = pd.read_csv("Train_pjb2QcD.csv")
+df = pd.read_csv("Train_75Dkybb.csv")
+# df = pd.read_csv("Train_pjb2QcD.csv")
 # print df["Age"]
 # print df.head()
 # print type(df["Applicant_BirthDate"][0])
@@ -88,6 +88,40 @@ def clean_str_list(df,lst):
 
     return lst
 
+# This function is for the bivariate analysis between two continous varibale
+def bivariate_analysis_cont_cont(cont_cont_list,df,target_name,sub_len,COUNTER,bar_width,PLOT_ROW_SIZE):
+
+    # print df.describe()
+    clean_cont_cont_list = clean_str_list(df,cont_cont_list)
+    print clean_catg_list
+    clean_df = df.dropna()
+    for col in clean_cont_cont_list:
+        summary = clean_df[col].describe()
+        print summary
+        # print summary
+        count = summary[0]
+        mean = summary[1]
+        std = summary[2]
+
+        plt.subplot(PLOT_ROW_SIZE,PLOT_COLUMNS_SIZE,COUNTER)
+        plt.title("mean "+str(np.float32(mean))+" std "+str(np.float32(std)),fontsize=12)
+
+        x = df[col]
+        y = np.float32(df[target_name])
+
+        print "returnd",y
+
+        print x.shape,y.shape
+
+        plt.xlabel(col+"\n count "+str(count), fontsize=12)
+        plt.ylabel(target_name, fontsize=12)
+        plt.scatter(x,y)
+
+        COUNTER +=1
+
+    return plt,COUNTER
+        # print x
+
 
 
 
@@ -133,4 +167,7 @@ def plot(data_input,target_name="",categorical_name=[],bin_size=20,bar_width=0.2
 
 col = ['ID', 'Applicant_Gender', 'Applicant_Occupation', 'Applicant_Qualification', 'Manager_Status', 'Manager_Gender', 'Manager_Num_Application', 'Manager_Business', 'Manager_Business2', 'Business_Sourced', 'App_age', 'Manager_age']
 
-plot(df,"Business_Sourced",['ID', 'Applicant_Gender', 'Applicant_Occupation', 'Applicant_Qualification', 'Manager_Status', 'Manager_Gender','Business_Sourced'])
+# plot(df,"Business_Sourced",['ID', 'Applicant_Gender', 'Applicant_Occupation', 'Applicant_Qualification', 'Manager_Status', 'Manager_Gender','Business_Sourced'])
+
+
+# plot(df,"Walc",["ID","Sex","Age","Address","Famsize","Pstatus","Medu","Fedu","Mjob","Fjob","Guardian","Traveltime","Studytime","Failures","Schoolsup","Famsup","Activities","Nursery","Higher","Internet","Romantic","Famrel","Freetime","Goout","Health","Absences","Grade","Walc"])
