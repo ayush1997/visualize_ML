@@ -5,17 +5,17 @@
 import pandas as pd
 import numpy as np
 
-df = pd.read_csv("train.csv")
-print df.head()
+# df = pd.read_csv("train_new.csv")
+# df = pd.read_csv("train.csv")
+df = pd.read_csv("Train_75Dkybb.csv")
+# print df.head()
+# print type(df["Applicant_BirthDate"][0])
 # print df.shape
 # print type(df.ix[:,10]).__name__
 # print df.ix[:,8].dtype
-print pd.__name__
+# print pd.__name__
 a = np.array(df)
-# print a
-# print a.T
-# print a.shape
-# print a.T.shape
+
 
 import matplotlib.pyplot as plt
 plt.style.use('ggplot')
@@ -73,13 +73,13 @@ def clean_str_list(df,lst):
 
 
 
-def univariate_analysis_continous(cont_list,df,sub,COUNTER,bin_size):
+def univariate_analysis_continous(cont_list,df,sub,COUNTER,bin_size,PLOT_ROW_SIZE):
     # res = all(isinstance(n,str) for n in df["Age"])
     # print res
     # print isinstance(df["Name"][0],str)
 
 
-    print df.describe()
+    # print df.describe()
     clean_cont_list = clean_str_list(df,cont_list)
     print clean_cont_list
     for col in cont_list:
@@ -90,8 +90,8 @@ def univariate_analysis_continous(cont_list,df,sub,COUNTER,bin_size):
         count_50 = summary[5]
         count_75 = summary[6]
 
-        plt.subplot(3,4,COUNTER)
-        plt.title("mean: "+str(np.float32(mean))+" std: "+str(np.float32(std)))
+        plt.subplot(PLOT_ROW_SIZE,PLOT_COLUMNS_SIZE,COUNTER)
+        plt.title("mean: "+str(np.float32(mean))+" std: "+str(np.float32(std)),fontsize=12)
         x = np.array(df[col].dropna())
         plt.xlabel(col+"\n count "+str(count)+"\n50%: "+str(count_50)+" 75%: "+str(count_75), fontsize=12)
         plt.ylabel("Frequency", fontsize=12)
@@ -104,33 +104,42 @@ def univariate_analysis_continous(cont_list,df,sub,COUNTER,bin_size):
 #Returns the frequecy table for a class
 def get_catg_info(df,col):
 
+
+
     return df[col].value_counts()
 
 
-def univariate_analysis_categorical(catg_list,df,sub_len,COUNTER,bar_width):
 
-    print df.describe()
+def univariate_analysis_categorical(catg_list,df,sub_len,COUNTER,bar_width,PLOT_ROW_SIZE):
+
+    # print df.describe()
     clean_catg_list = clean_str_list(df,catg_list)
     print clean_catg_list
     for col in catg_list:
         summary = df[col].dropna().describe()
-        print summary
+        # print summary
         count = summary[0]
         mean = summary[1]
         std = summary[2]
         count_50 = summary[5]
         count_75 = summary[6]
 
-        plt.subplot(3,4,COUNTER)
-        plt.title("mean "+str(np.float32(mean))+" std "+str(np.float32(std)))
-        x = df[col].unique()
+        plt.subplot(PLOT_ROW_SIZE,PLOT_COLUMNS_SIZE,COUNTER)
+        plt.title("mean "+str(np.float32(mean))+" std "+str(np.float32(std)),fontsize=12)
+        x = df.dropna()[col].unique()
 
-        y = get_catg_info(df,col)
+        y = get_catg_info(df.dropna(),col)
+        print y
+        y = np.float32([y[i] for i in x])
+
+        print "returnd",y
         labels = y/y.sum() * 100
+        print labels
+        # print "inout",x
+        print x.shape,y.shape
 
-        
         plt.xlabel(col+"\n count "+str(count)+"\n50%: "+str(count_50)+" 75%: "+str(count_75), fontsize=12)
-        plt.ylabel("count", fontsize=12)
+        plt.ylabel("Frequency", fontsize=12)
         plt.bar(x,y,width=bar_width)
 
         for x,y, label in zip(x,y, np.around(np.float32(labels), decimals=2)):
@@ -143,7 +152,7 @@ def univariate_analysis_categorical(catg_list,df,sub_len,COUNTER,bar_width):
 
 
 
-def plot(data_input,categorical_name,bin_size=20,bar_width=0.2):
+def plot(data_input,categorical_name=[],bin_size=20,bar_width=0.2,wspace=0.5,hspace=0.8):
 
     if type(data_input).__name__ == "DataFrame" :
 
@@ -152,7 +161,10 @@ def plot(data_input,categorical_name,bin_size=20,bar_width=0.2):
         print columns_name
         #Subplot(Total number of graphs)
         subplot = len(columns_name)
-
+        if subplot < PLOT_COLUMNS_SIZE:
+            subplot = PLOT_COLUMNS_SIZE
+        PLOT_ROW_SIZE = subplot/PLOT_COLUMNS_SIZE
+        PLOT_ROW_SIZE = 5
 
 
         #Checks if the categorical_name are present in the orignal dataframe columns.
@@ -161,12 +173,12 @@ def plot(data_input,categorical_name,bin_size=20,bar_width=0.2):
             category_dict,catg_list,cont_list = get_category(data_input,categorical_name,columns_name)
 
 
-        plot,count = univariate_analysis_continous(cont_list,data_input,subplot,COUNTER,bin_size)
-        plot,count = univariate_analysis_categorical(catg_list,data_input,subplot,count,bar_width)
+        plot,count = univariate_analysis_continous(cont_list,data_input,subplot,COUNTER,bin_size,PLOT_ROW_SIZE)
+        plot,count = univariate_analysis_categorical(catg_list,data_input,subplot,count,bar_width,PLOT_ROW_SIZE)
 
         # p.autoscale(True)
-
-
+        plot.subplots_adjust(wspace = wspace,hspace=hspace)
+        # plot.tight_layout()
         plot.show()
         #The DataFrame is converted to numpy array
         data_input_new = dataframe_to_numpy(data_input)
@@ -178,6 +190,15 @@ def plot(data_input,categorical_name,bin_size=20,bar_width=0.2):
 
 
 
+col = ['ID', 'Office_PIN', 'Application_Receipt_Date', 'Applicant_City_PIN', 'Applicant_Gender', 'Applicant_BirthDate', 'Applicant_Marital_Status', 'Applicant_Occupation', 'Applicant_Qualification', 'Manager_DOJ', 'Manager_Joining_Designation', 'Manager_Current_Designation', 'Manager_Grade', 'Manager_Status', 'Manager_Gender', 'Manager_DoB', 'Manager_Num_Application', 'Manager_Num_Coded', 'Manager_Business', 'Manager_Num_Products', 'Manager_Business2', 'Manager_Num_Products2', 'Business_Sourced']
+
+# print df.columns.values.tolist()
+# ['ID', 'Applicant_Gender', 'Applicant_Occupation', 'Applicant_Qualification', 'Manager_Status', 'Manager_Gender', 'Manager_Num_Application', 'Manager_Business', 'Manager_Business2', 'Business_Sourced', 'App_age', 'Manager_age'
+
+plot(df)
 
 
-plot(df,["Sex","Survived","Pclass","SibSp","Parch","Ticket","Cabin","Embarked"])
+# print df["Manager_Status"].value_counts()
+# print type(df["Manager_Status"].value_counts())
+# print df["Manager_Status"].unique()
+# print type(df["Manager_Status"].unique())
