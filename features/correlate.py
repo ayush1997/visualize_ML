@@ -6,17 +6,19 @@ import pandas as pd
 import numpy as np
 from scipy.stats import pearsonr
 import matplotlib.pyplot as plt
+from sklearn.feature_selection import chi2
+
 plt.style.use('ggplot')
-# df = pd.read_csv("train_new.csv")
+df = pd.read_csv("train_new.csv")
 # df = pd.read_csv("train.csv")
-df = pd.read_csv("Train_75Dkybb.csv")
+# df = pd.read_csv("Train_75Dkybb.csv")
 # df = pd.read_csv("Train_pjb2QcD.csv")
 
 # print df[df["Business_Sourced"]==0]["Manager_Grade"]
 a = np.array(df)
 
 fig = plt.figure()
-fig.subplots_adjust(bottom=0.04,left = 0.05,right=0.97,top=0.93,wspace = 0.28,hspace = 0.41)
+fig.subplots_adjust(bottom=0.04,left = 0.05,right=0.97,top=0.93,wspace = 0.28,hspace = 0.54)
 
 # target_classes = [0,1]
 # df =df.dropna()
@@ -27,7 +29,7 @@ fig.subplots_adjust(bottom=0.04,left = 0.05,right=0.97,top=0.93,wspace = 0.28,hs
 
 # fig = plt.figure(figsize=())
 
-PLOT_COLUMNS_SIZE = 4
+PLOT_COLUMNS_SIZE = 3
 COUNTER = 1
 def dataframe_to_numpy(df):
     return np.array(df)
@@ -127,7 +129,16 @@ def bivariate_analysis_cont_cont(cont_cont_list,df,target_name,sub_len,COUNTER,P
 
     return plt,COUNTER
 
-def bivariate_analysis_catg_catg(catg_catg_list,df,target_name,sub_len,COUNTER,PLOT_ROW_SIZE):
+
+#Chi test it used to see association between catgorical vs categorical variables.
+#Lower Pvalue are significant they should be < 0.05
+#chi value = X^2 = summation [(observed-expected)^2/expected]
+# The distribution of the statistic X2 is chi-square with (r-1)(c-1) degrees of freedom, where r represents the number of rows in the two-way table and c represents the number of columns. The distribution is denoted (df), where df is the number of degrees of freedom.
+#pvalue = p(df>=x^2)
+def evaluate_chi(x,y):
+    chi,p_val = chi2(x,y)
+    return chi,p_val
+def bivariate_analysis_catg_catg(catg_catg_list,df,target_name,sub_len,COUNTER,PLOT_ROW_SIZE,bin_size="auto"):
 
     # print df.describe()
     clean_catg_catg_list = clean_str_list(df,catg_catg_list)
@@ -139,6 +150,12 @@ def bivariate_analysis_catg_catg(catg_catg_list,df,target_name,sub_len,COUNTER,P
     for col in clean_catg_catg_list:
         summary = clean_df[col].describe()
         print summary
+        binwidth = 0.7
+
+        if bin_size == 'auto':
+            bins_size =np.arange(min(clean_df[col].tolist()), max(clean_df[col].tolist()) + binwidth, binwidth)
+        else:
+            bins_size = bin_size
         # print summary
         count = summary[0]
         mean = summary[1]
@@ -148,15 +165,17 @@ def bivariate_analysis_catg_catg(catg_catg_list,df,target_name,sub_len,COUNTER,P
         plt.title("mean "+str(np.float32(mean))+" std "+str(np.float32(std)),fontsize=10)
 
         x = [np.array(clean_df[clean_df[target_name]==i][col]) for i in target_classes]
-        if col == "Studytime":
-            print x
-        y = np.float32(df[target_name])
-        # corr = pearson_correlation_cont_cont(x,y)
-        # print "returnd",y
+        y = np.float32(clean_df[target_name])
 
-        plt.xlabel(col, fontsize=10)
+        print y
+        print np.array(clean_df[col]).reshape(-1,1).shape
+
+        chi,p_val = evaluate_chi(np.array(clean_df[col]).reshape(-1,1),y)
+        print chi,p_val
+
+        plt.xlabel(col+"\n chi: "+str(np.float32(chi[0]))+" / p_val: "+str(p_val[0]), fontsize=10)
         plt.ylabel("Frequency", fontsize=10)
-        plt.hist(x,stacked=True)
+        plt.hist(x,bins=bins_size,stacked=True)
 
         COUNTER +=1
 
@@ -166,7 +185,7 @@ def bivariate_analysis_catg_catg(catg_catg_list,df,target_name,sub_len,COUNTER,P
 
 
 
-def plot(data_input,target_name="",categorical_name=[],bin_size=20,bar_width=0.2,wspace=0.5,hspace=0.8):
+def plot(data_input,target_name="",categorical_name=[],bin_size="auto",bar_width=0.2,wspace=0.5,hspace=0.8):
 
     if type(data_input).__name__ == "DataFrame" :
 
@@ -188,11 +207,8 @@ def plot(data_input,target_name="",categorical_name=[],bin_size=20,bar_width=0.2
         print fin_cat_dict
 
         plot,count =  bivariate_analysis_cont_cont(cont_cont_list,data_input,target_name,subplot,COUNTER,PLOT_ROW_SIZE)
-        plot,count =  bivariate_analysis_catg_catg(catg_catg_list,data_input,target_name,subplot,count,PLOT_ROW_SIZE)
+        plot,count =  bivariate_analysis_catg_catg(catg_catg_list,data_input,target_name,subplot,count,PLOT_ROW_SIZE,bin_size=bin_size)
 
-        # p.autoscale(True)
-        # plot.subplots_adjust(wspace = wspace,hspace=hspace)
-        # plot.tight_layout()
         plot.show()
         #The DataFrame is converted to numpy array
         data_input_new = dataframe_to_numpy(data_input)
@@ -206,7 +222,7 @@ def plot(data_input,target_name="",categorical_name=[],bin_size=20,bar_width=0.2
 
 col = ['ID', 'Applicant_Gender', 'Applicant_Occupation', 'Applicant_Qualification', 'Manager_Status', 'Manager_Gender', 'Manager_Num_Application', 'Manager_Business', 'Manager_Business2', 'Business_Sourced', 'App_age', 'Manager_age']
 
-# plot(df,"Business_Sourced",['ID', 'Applicant_Gender', 'Applicant_Occupation', 'Applicant_Qualification', 'Manager_Status', 'Manager_Gender','Business_Sourced'])
+plot(df,"Business_Sourced",['ID', 'Applicant_Gender', 'Applicant_Occupation', 'Applicant_Qualification', 'Manager_Status', 'Manager_Gender','Business_Sourced'])
 
 
-plot(df,"Walc",["ID","Sex","Age","Address","Famsize","Pstatus","Medu","Fedu","Mjob","Fjob","Guardian","Traveltime","Studytime","Failures","Schoolsup","Famsup","Activities","Nursery","Higher","Internet","Romantic","Famrel","Freetime","Goout","Health","Absences","Grade","Walc"])
+# plot(df,"Walc",["ID","Sex","Age","Address","Famsize","Pstatus","Medu","Fedu","Mjob","Fjob","Guardian","Traveltime","Studytime","Failures","Schoolsup","Famsup","Activities","Nursery","Higher","Internet","Romantic","Famrel","Freetime","Goout","Health","Absences","Grade","Walc"])
