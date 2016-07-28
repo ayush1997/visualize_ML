@@ -4,6 +4,8 @@
 
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
+plt.style.use('ggplot')
 
 # df = pd.read_csv("train_new.csv")
 # df = pd.read_csv("train.csv")
@@ -16,12 +18,13 @@ df = pd.read_csv("Train_75Dkybb.csv")
 # print pd.__name__
 a = np.array(df)
 
+fig = plt.figure()
+fig.subplots_adjust(bottom=0.04,left = 0.05,right=0.97,top=0.93,wspace = 0.28,hspace = 0.41)
 
-import matplotlib.pyplot as plt
-plt.style.use('ggplot')
+
 # fig = plt.figure(figsize=())
 
-PLOT_COLUMNS_SIZE = 3
+PLOT_COLUMNS_SIZE = 4
 COUNTER = 1
 def dataframe_to_numpy(df):
     return np.array(df)

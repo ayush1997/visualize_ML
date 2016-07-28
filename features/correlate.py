@@ -4,26 +4,30 @@
 
 import pandas as pd
 import numpy as np
-
+from scipy.stats import pearsonr
+import matplotlib.pyplot as plt
+plt.style.use('ggplot')
 # df = pd.read_csv("train_new.csv")
 # df = pd.read_csv("train.csv")
 df = pd.read_csv("Train_75Dkybb.csv")
 # df = pd.read_csv("Train_pjb2QcD.csv")
-# print df["Age"]
-# print df.head()
-# print type(df["Applicant_BirthDate"][0])
-# print df.shape
-# print type(df.ix[:,10]).__name__
-# print df.ix[:,8].dtype
-# print pd.__name__
+
+# print df[df["Business_Sourced"]==0]["Manager_Grade"]
 a = np.array(df)
 
+fig = plt.figure()
+fig.subplots_adjust(bottom=0.04,left = 0.05,right=0.97,top=0.93,wspace = 0.28,hspace = 0.41)
 
-import matplotlib.pyplot as plt
-plt.style.use('ggplot')
+# target_classes = [0,1]
+# df =df.dropna()
+# x = [np.array(df[df["Business_Sourced"]==i]["Manager_Grade"]) for i in target_classes]
+# print x
+# plt.hist(x,stacked=True)
+# plt.show()
+
 # fig = plt.figure(figsize=())
 
-PLOT_COLUMNS_SIZE = 3
+PLOT_COLUMNS_SIZE = 4
 COUNTER = 1
 def dataframe_to_numpy(df):
     return np.array(df)
@@ -88,12 +92,14 @@ def clean_str_list(df,lst):
 
     return lst
 
+def pearson_correlation_cont_cont(x,y):
+    return pearsonr(x, y)
 # This function is for the bivariate analysis between two continous varibale
-def bivariate_analysis_cont_cont(cont_cont_list,df,target_name,sub_len,COUNTER,bar_width,PLOT_ROW_SIZE):
+def bivariate_analysis_cont_cont(cont_cont_list,df,target_name,sub_len,COUNTER,PLOT_ROW_SIZE):
 
     # print df.describe()
     clean_cont_cont_list = clean_str_list(df,cont_cont_list)
-    print clean_catg_list
+    print clean_cont_cont_list
     clean_df = df.dropna()
     for col in clean_cont_cont_list:
         summary = clean_df[col].describe()
@@ -104,24 +110,57 @@ def bivariate_analysis_cont_cont(cont_cont_list,df,target_name,sub_len,COUNTER,b
         std = summary[2]
 
         plt.subplot(PLOT_ROW_SIZE,PLOT_COLUMNS_SIZE,COUNTER)
-        plt.title("mean "+str(np.float32(mean))+" std "+str(np.float32(std)),fontsize=12)
+        plt.title("mean "+str(np.float32(mean))+" std "+str(np.float32(std)),fontsize=10)
 
         x = df[col]
         y = np.float32(df[target_name])
-
+        corr = pearson_correlation_cont_cont(x,y)
         print "returnd",y
 
         print x.shape,y.shape
 
-        plt.xlabel(col+"\n count "+str(count), fontsize=12)
-        plt.ylabel(target_name, fontsize=12)
+        plt.xlabel(col+"\n count "+str(count)+"\n Corr: "+str(cor), fontsize=10)
+        plt.ylabel(target_name, fontsize=10)
         plt.scatter(x,y)
 
         COUNTER +=1
 
     return plt,COUNTER
-        # print x
 
+def bivariate_analysis_catg_catg(catg_catg_list,df,target_name,sub_len,COUNTER,PLOT_ROW_SIZE):
+
+    # print df.describe()
+    clean_catg_catg_list = clean_str_list(df,catg_catg_list)
+    print clean_catg_catg_list
+    clean_df = df.dropna()
+
+    target_classes =df[target_name].unique()
+
+    for col in clean_catg_catg_list:
+        summary = clean_df[col].describe()
+        print summary
+        # print summary
+        count = summary[0]
+        mean = summary[1]
+        std = summary[2]
+
+        plt.subplot(PLOT_ROW_SIZE,PLOT_COLUMNS_SIZE,COUNTER)
+        plt.title("mean "+str(np.float32(mean))+" std "+str(np.float32(std)),fontsize=10)
+
+        x = [np.array(clean_df[clean_df[target_name]==i][col]) for i in target_classes]
+        if col == "Studytime":
+            print x
+        y = np.float32(df[target_name])
+        # corr = pearson_correlation_cont_cont(x,y)
+        # print "returnd",y
+
+        plt.xlabel(col, fontsize=10)
+        plt.ylabel("Frequency", fontsize=10)
+        plt.hist(x,stacked=True)
+
+        COUNTER +=1
+
+    return plt,COUNTER
 
 
 
@@ -148,13 +187,13 @@ def plot(data_input,target_name="",categorical_name=[],bin_size=20,bar_width=0.2
             fin_cat_dict,catg_catg_list,cont_cont_list,catg_cont_list,cont_catg_list = get_category(data_input,target_name,categorical_name,columns_name)
         print fin_cat_dict
 
-        # plot,count = univariate_analysis_continous(cont_list,data_input,subplot,COUNTER,bin_size,PLOT_ROW_SIZE)
-        # plot,count = univariate_analysis_categorical(catg_list,data_input,subplot,count,bar_width,PLOT_ROW_SIZE)
+        plot,count =  bivariate_analysis_cont_cont(cont_cont_list,data_input,target_name,subplot,COUNTER,PLOT_ROW_SIZE)
+        plot,count =  bivariate_analysis_catg_catg(catg_catg_list,data_input,target_name,subplot,count,PLOT_ROW_SIZE)
 
         # p.autoscale(True)
         # plot.subplots_adjust(wspace = wspace,hspace=hspace)
-        # # plot.tight_layout()
-        # plot.show()
+        # plot.tight_layout()
+        plot.show()
         #The DataFrame is converted to numpy array
         data_input_new = dataframe_to_numpy(data_input)
         # print type(data_input_new)
@@ -170,4 +209,4 @@ col = ['ID', 'Applicant_Gender', 'Applicant_Occupation', 'Applicant_Qualificatio
 # plot(df,"Business_Sourced",['ID', 'Applicant_Gender', 'Applicant_Occupation', 'Applicant_Qualification', 'Manager_Status', 'Manager_Gender','Business_Sourced'])
 
 
-# plot(df,"Walc",["ID","Sex","Age","Address","Famsize","Pstatus","Medu","Fedu","Mjob","Fjob","Guardian","Traveltime","Studytime","Failures","Schoolsup","Famsup","Activities","Nursery","Higher","Internet","Romantic","Famrel","Freetime","Goout","Health","Absences","Grade","Walc"])
+plot(df,"Walc",["ID","Sex","Age","Address","Famsize","Pstatus","Medu","Fedu","Mjob","Fjob","Guardian","Traveltime","Studytime","Failures","Schoolsup","Famsup","Activities","Nursery","Higher","Internet","Romantic","Famrel","Freetime","Goout","Health","Absences","Grade","Walc"])
