@@ -7,6 +7,7 @@ import numpy as np
 from scipy.stats import pearsonr
 import matplotlib.pyplot as plt
 from sklearn.feature_selection import chi2
+from sklearn.feature_selection import f_classif
 
 plt.style.use('ggplot')
 df = pd.read_csv("train_new.csv")
@@ -18,7 +19,7 @@ df = pd.read_csv("train_new.csv")
 a = np.array(df)
 
 fig = plt.figure()
-fig.subplots_adjust(bottom=0.04,left = 0.05,right=0.97,top=0.93,wspace = 0.28,hspace = 0.54)
+fig.subplots_adjust(bottom=0.04,left = 0.05,right=0.97,top=0.93,wspace = 0.28,hspace = 0.66)
 
 # target_classes = [0,1]
 # df =df.dropna()
@@ -82,9 +83,7 @@ def clean_str_list(df,lst):
     for i in lst:
         # print df[i]
         res = any(isinstance(n,str) for n in df[i])
-        # if i == "Cabin":
-        #     print "found"
-        #     print [type(n) for n in df[i]]
+
         print res
         if res == True:
             rem.append(i)
@@ -105,7 +104,7 @@ def bivariate_analysis_cont_cont(cont_cont_list,df,target_name,sub_len,COUNTER,P
     clean_df = df.dropna()
     for col in clean_cont_cont_list:
         summary = clean_df[col].describe()
-        print summary
+        # print summary
         # print summary
         count = summary[0]
         mean = summary[1]
@@ -117,11 +116,11 @@ def bivariate_analysis_cont_cont(cont_cont_list,df,target_name,sub_len,COUNTER,P
         x = df[col]
         y = np.float32(df[target_name])
         corr = pearson_correlation_cont_cont(x,y)
-        print "returnd",y
+        # print "returnd",y
 
-        print x.shape,y.shape
+        # print x.shape,y.shape
 
-        plt.xlabel(col+"\n count "+str(count)+"\n Corr: "+str(cor), fontsize=10)
+        plt.xlabel(col+"\n count "+str(count)+"\n Corr: "+str(np.float32(corr[0])), fontsize=10)
         plt.ylabel(target_name, fontsize=10)
         plt.scatter(x,y)
 
@@ -182,6 +181,50 @@ def bivariate_analysis_catg_catg(catg_catg_list,df,target_name,sub_len,COUNTER,P
     return plt,COUNTER
 
 
+def evaluate_anova(x,y):
+    F_value,pvalue = f_classif(x,y)
+    return F_value,pvalue
+
+# In descriptive statistics, a box plot or boxplot is a convenient way of graphically depicting groups of numerical data through their quartiles. Box plots may also have lines extending vertically from the boxes (whiskers) indicating variability outside the upper and lower quartiles, hence the terms box-and-whisker plot and box-and-whisker diagram.
+def bivariate_analysis_cont_catg(cont_catg_list,df,target_name,sub_len,COUNTER,PLOT_ROW_SIZE):
+
+    # print df.describe()
+    clean_cont_catg_list = clean_str_list(df,cont_catg_list)
+    print clean_cont_catg_list
+    clean_df = df.dropna()
+
+
+
+    for col in clean_cont_catg_list:
+
+        col_classes =df[col].unique()
+
+        summary = clean_df[col].describe()
+        # print summary
+        count = summary[0]
+        mean = summary[1]
+        std = summary[2]
+
+        plt.subplot(PLOT_ROW_SIZE,PLOT_COLUMNS_SIZE,COUNTER)
+        plt.title("mean "+str(np.float32(mean))+" std "+str(np.float32(std)),fontsize=10)
+
+        x = [np.array(clean_df[clean_df[col]==i][target_name]) for i in col_classes]
+        y = np.float32(clean_df[target_name])
+
+        print y
+        print np.array(clean_df[col]).reshape(-1,1).shape
+
+        f_value,p_val = evaluate_anova(np.array(clean_df[col]).reshape(-1,1),y)
+        print f_value,p_val
+        #
+        plt.xlabel(col+"\n f_value: "+str(np.float32(f_value[0]))+" / p_val: "+str(p_val[0]), fontsize=10)
+        plt.ylabel(target_name, fontsize=10)
+        plt.boxplot(x)
+
+        COUNTER +=1
+
+    return plt,COUNTER
+
 
 
 
@@ -208,6 +251,7 @@ def plot(data_input,target_name="",categorical_name=[],bin_size="auto",bar_width
 
         plot,count =  bivariate_analysis_cont_cont(cont_cont_list,data_input,target_name,subplot,COUNTER,PLOT_ROW_SIZE)
         plot,count =  bivariate_analysis_catg_catg(catg_catg_list,data_input,target_name,subplot,count,PLOT_ROW_SIZE,bin_size=bin_size)
+        plot,count =  bivariate_analysis_cont_catg(cont_catg_list,data_input,target_name,subplot,count,PLOT_ROW_SIZE)
 
         plot.show()
         #The DataFrame is converted to numpy array
@@ -222,7 +266,7 @@ def plot(data_input,target_name="",categorical_name=[],bin_size="auto",bar_width
 
 col = ['ID', 'Applicant_Gender', 'Applicant_Occupation', 'Applicant_Qualification', 'Manager_Status', 'Manager_Gender', 'Manager_Num_Application', 'Manager_Business', 'Manager_Business2', 'Business_Sourced', 'App_age', 'Manager_age']
 
-plot(df,"Business_Sourced",['ID', 'Applicant_Gender', 'Applicant_Occupation', 'Applicant_Qualification', 'Manager_Status', 'Manager_Gender','Business_Sourced'])
+plot(df,"App_age",['ID', 'Applicant_Gender', 'Applicant_Occupation', 'Applicant_Qualification', 'Manager_Status', 'Manager_Gender','Business_Sourced'])
 
 
 # plot(df,"Walc",["ID","Sex","Age","Address","Famsize","Pstatus","Medu","Fedu","Mjob","Fjob","Guardian","Traveltime","Studytime","Failures","Schoolsup","Famsup","Activities","Nursery","Higher","Internet","Romantic","Famrel","Freetime","Goout","Health","Absences","Grade","Walc"])
