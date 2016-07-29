@@ -13,7 +13,7 @@ df = pd.read_csv("Train_pjb2QcD.csv")
 
 
 fig = plt.figure()
-fig.subplots_adjust(bottom=0.08,left = 0.05,right=0.97,top=0.93,wspace = 0.28,hspace = 0.66)
+
 
 COUNTER = 1
 
@@ -237,7 +237,7 @@ def total_subplots(df,lst):
     total = [len(clean_str_list(clean_df,i)) for i in lst]
     return sum(total)
 
-def plot(data_input,target_name="",categorical_name=[],drop=[],PLOT_COLUMNS_SIZE = 6,bin_size="auto",wspace=0.5,hspace=0.8):
+def plot(data_input,target_name="",categorical_name=[],drop=[],PLOT_COLUMNS_SIZE = 4,bin_size="auto",wspace=0.5,hspace=0.8):
     """
     This is the main function to give Bivariate analysis between the target variable and the input features.
 
@@ -275,6 +275,7 @@ def plot(data_input,target_name="",categorical_name=[],drop=[],PLOT_COLUMNS_SIZE
         # Column names
         columns_name = data_input.columns.values
 
+        #To drop user specified columns.
         if is_present(columns_name,drop):
             data_input = data_input.drop(drop,axis=1)
         else:
@@ -300,7 +301,7 @@ def plot(data_input,target_name="",categorical_name=[],drop=[],PLOT_COLUMNS_SIZE
         plot,count =  bivariate_analysis_cont_catg(cont_catg_list,data_input,target_name,total,count,PLOT_ROW_SIZE,PLOT_COLUMNS_SIZE)
         plot,count =  bivariate_analysis_catg_cont(catg_cont_list,data_input,target_name,total,count,PLOT_ROW_SIZE,PLOT_COLUMNS_SIZE)
 
-
+        fig.subplots_adjust(bottom=0.08,left = 0.05,right=0.97,top=0.93,wspace = 0.28,hspace = 0.66)
         plot.show()
 
     else:

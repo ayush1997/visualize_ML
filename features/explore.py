@@ -1,28 +1,18 @@
-'''parameters
-
-'''
-
 import pandas as pd
 import numpy as np
+from math import ceil
 import matplotlib.pyplot as plt
 plt.style.use('ggplot')
 
 # df = pd.read_csv("train_new.csv")
 # df = pd.read_csv("train.csv")
 df = pd.read_csv("Train_75Dkybb.csv")
-# print df.head()
-# print type(df["Applicant_BirthDate"][0])
-# print df.shape
-# print type(df.ix[:,10]).__name__
-# print df.ix[:,8].dtype
-# print pd.__name__
+
 a = np.array(df)
 
 fig = plt.figure()
-fig.subplots_adjust(bottom=0.04,left = 0.05,right=0.97,top=0.93,wspace = 0.28,hspace = 0.41)
 
 
-# fig = plt.figure(figsize=())
 
 PLOT_COLUMNS_SIZE = 4
 COUNTER = 1
@@ -44,7 +34,6 @@ def get_category(df,categorical_name,columns_name):
         else:
             cat_dict[col] = "continous"
             continous.append(col)
-    print cat_dict
     return cat_dict,categorical,continous
 
 #Return True if the categorical_name are present in the orignal dataframe columns.
@@ -57,15 +46,10 @@ def is_present(columns_name,categorical_name):
 
 #function removes any column with string values which cannt be plotted
 def clean_str_list(df,lst):
-    print lst
     rem=[]
     for i in lst:
-        # print df[i]
+
         res = any(isinstance(n,str) for n in df[i])
-        # if i == "Cabin":
-        #     print "found"
-        #     print [type(n) for n in df[i]]
-        print res
         if res == True:
             rem.append(i)
 
@@ -75,16 +59,10 @@ def clean_str_list(df,lst):
     return lst
 
 
-
+#Univariate analysis for continuous variables is done using histograms and graph summary.
 def univariate_analysis_continous(cont_list,df,sub,COUNTER,bin_size,PLOT_ROW_SIZE):
-    # res = all(isinstance(n,str) for n in df["Age"])
-    # print res
-    # print isinstance(df["Name"][0],str)
 
-
-    # print df.describe()
     clean_cont_list = clean_str_list(df,cont_list)
-    print clean_cont_list
     for col in cont_list:
         summary = df[col].dropna().describe()
         count = summary[0]
@@ -99,28 +77,24 @@ def univariate_analysis_continous(cont_list,df,sub,COUNTER,bin_size,PLOT_ROW_SIZ
         plt.xlabel(col+"\n count "+str(count)+"\n50%: "+str(count_50)+" 75%: "+str(count_75), fontsize=12)
         plt.ylabel("Frequency", fontsize=12)
         plt.hist(x,bins=bin_size)
+        print col+" plotted...."
         COUNTER +=1
 
     return plt,COUNTER
-        # print x
+
 
 #Returns the frequecy table for a class
 def get_catg_info(df,col):
-
-
-
     return df[col].value_counts()
 
 
-
+#Univariate analysis for categotical variables is done using histograms and graph summary.
 def univariate_analysis_categorical(catg_list,df,sub_len,COUNTER,bar_width,PLOT_ROW_SIZE):
 
-    # print df.describe()
     clean_catg_list = clean_str_list(df,catg_list)
-    print clean_catg_list
+
     for col in catg_list:
         summary = df[col].dropna().describe()
-        # print summary
         count = summary[0]
         mean = summary[1]
         std = summary[2]
@@ -132,14 +106,9 @@ def univariate_analysis_categorical(catg_list,df,sub_len,COUNTER,bar_width,PLOT_
         x = df.dropna()[col].unique()
 
         y = get_catg_info(df.dropna(),col)
-        print y
         y = np.float32([y[i] for i in x])
 
-        print "returnd",y
         labels = y/y.sum() * 100
-        print labels
-        # print "inout",x
-        print x.shape,y.shape
 
         plt.xlabel(col+"\n count "+str(count)+"\n50%: "+str(count_50)+" 75%: "+str(count_75), fontsize=12)
         plt.ylabel("Frequency", fontsize=12)
@@ -147,27 +116,58 @@ def univariate_analysis_categorical(catg_list,df,sub_len,COUNTER,bar_width,PLOT_
 
         for x,y, label in zip(x,y, np.around(np.float32(labels), decimals=2)):
             plt.text(x + bar_width/2,y + 5, label, ha='center', va='bottom',rotation=90)
+        print col+" plotted...."
         COUNTER +=1
 
     return plt,COUNTER
-        # print x
 
+#returns the total number of subplots to be made.
+def total_subplots(df,lst):
+    clean_df = df.dropna()
+    total = [len(clean_str_list(clean_df,i)) for i in lst]
+    return sum(total)
 
+def plot(data_input,categorical_name=[],drop=[],PLOT_COLUMNS_SIZE = 4,bin_size=20,bar_width=0.2,wspace=0.5,hspace=0.8):
 
+    """
+    This is the main function to give Bivariate analysis between the target variable and the input features.
 
-def plot(data_input,categorical_name=[],bin_size=20,bar_width=0.2,wspace=0.5,hspace=0.8):
+    Parameters
+    -----------
+    data_input  : Dataframe
+            This is the input Dataframe with all data.
 
+    categorical_name : list
+            Names of all categorical variable columns with more than 2 classes, to distinguish with the continuous variables.
+
+    drop : list
+            Names of columns to be dropped.
+
+    PLOT_COLUMNS_SIZE : int
+            Number of plots to display vertically in the display window.The row size is adjusted accordingly.
+
+    bin_size : int ;default="auto"
+            Number of bins for the histogram displayed in the categorical vs categorical category.
+
+    wspace : int ;default = 0.5
+            Horizontal padding between subplot on the display window.
+
+    hspace : int ;default = 0.5
+            Vertical padding between subplot on the display window.
+
+    -----------
+
+    """
     if type(data_input).__name__ == "DataFrame" :
 
         # Column names
         columns_name = data_input.columns.values
-        print columns_name
-        #Subplot(Total number of graphs)
-        subplot = len(columns_name)
-        if subplot < PLOT_COLUMNS_SIZE:
-            subplot = PLOT_COLUMNS_SIZE
-        PLOT_ROW_SIZE = subplot/PLOT_COLUMNS_SIZE
-        PLOT_ROW_SIZE = 5
+
+        #To drop user specified columns.
+        if is_present(columns_name,drop):
+            data_input = data_input.drop(drop,axis=1)
+        else:
+            raise ValueError("Couldn't find it in the input Dataframe!")
 
 
         #Checks if the categorical_name are present in the orignal dataframe columns.
@@ -176,20 +176,20 @@ def plot(data_input,categorical_name=[],bin_size=20,bar_width=0.2,wspace=0.5,hsp
             category_dict,catg_list,cont_list = get_category(data_input,categorical_name,columns_name)
 
 
-        plot,count = univariate_analysis_continous(cont_list,data_input,subplot,COUNTER,bin_size,PLOT_ROW_SIZE)
-        plot,count = univariate_analysis_categorical(catg_list,data_input,subplot,count,bar_width,PLOT_ROW_SIZE)
+        #Subplot(Total number of graphs)
+        total = total_subplots(data_input,[catg_list,cont_list])
+        if total < PLOT_COLUMNS_SIZE:
+            total = PLOT_COLUMNS_SIZE
+        PLOT_ROW_SIZE = ceil(float(total)/PLOT_COLUMNS_SIZE)
 
-        # p.autoscale(True)
-        plot.subplots_adjust(wspace = wspace,hspace=hspace)
-        # plot.tight_layout()
+        plot,count = univariate_analysis_continous(cont_list,data_input,total,COUNTER,bin_size,PLOT_ROW_SIZE)
+        plot,count = univariate_analysis_categorical(catg_list,data_input,total,count,bar_width,PLOT_ROW_SIZE)
+
+        fig.subplots_adjust(bottom=0.08,left = 0.05,right=0.97,top=0.93,wspace = wspace,hspace = hspace)
         plot.show()
-        #The DataFrame is converted to numpy array
-        data_input_new = dataframe_to_numpy(data_input)
-        # print type(data_input_new)
-        # print data_input_new
-        #Converted the numpy to its transpose for better access
-        data_input_new = data_input_new.T
-        # print data_input_new
+
+    else:
+        raise ValueError("The input doesn't seems to be Dataframe")
 
 
 
