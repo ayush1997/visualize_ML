@@ -10,8 +10,8 @@ from sklearn.feature_selection import chi2
 from sklearn.feature_selection import f_classif
 
 plt.style.use('ggplot')
-df = pd.read_csv("train_new.csv")
-# df = pd.read_csv("train.csv")
+# df = pd.read_csv("train_new.csv")
+df = pd.read_csv("train.csv")
 # df = pd.read_csv("Train_75Dkybb.csv")
 # df = pd.read_csv("Train_pjb2QcD.csv")
 
@@ -30,7 +30,7 @@ fig.subplots_adjust(bottom=0.04,left = 0.05,right=0.97,top=0.93,wspace = 0.28,hs
 
 # fig = plt.figure(figsize=())
 
-PLOT_COLUMNS_SIZE = 3
+PLOT_COLUMNS_SIZE = 4
 COUNTER = 1
 def dataframe_to_numpy(df):
     return np.array(df)
@@ -145,7 +145,9 @@ def bivariate_analysis_catg_catg(catg_catg_list,df,target_name,sub_len,COUNTER,P
     clean_df = df.dropna()
 
     target_classes =df[target_name].unique()
-
+    label = [str(i) for i in target_classes]
+    print target_classes
+    c = 0
     for col in clean_catg_catg_list:
         summary = clean_df[col].describe()
         print summary
@@ -174,13 +176,18 @@ def bivariate_analysis_catg_catg(catg_catg_list,df,target_name,sub_len,COUNTER,P
 
         plt.xlabel(col+"\n chi: "+str(np.float32(chi[0]))+" / p_val: "+str(p_val[0]), fontsize=10)
         plt.ylabel("Frequency", fontsize=10)
-        plt.hist(x,bins=bins_size,stacked=True)
+        plt.hist(x,bins=bins_size,stacked=True,label = label)
+        # print str(target_classes[c])
+        plt.legend(prop={'size': 10})
 
         COUNTER +=1
+        c+=1
 
     return plt,COUNTER
 
-
+# Analysis of variance (ANOVA) is a collection of statistical models used to analyze the differences among group means and their associated procedures (such as "variation" among and between groups)
+#  In its simplest form, ANOVA provides a statistical test of whether or not the means of several groups are equal, and therefore generalizes the t-test to more than two groups. ANOVAs are useful for comparing (testing) three or more means (groups or variables) for statistical significance.
+# A one-way ANOVA is used to compare the means of more than two independent groups. A one-way ANOVA comparing just two groups will give you the same results at the independent t test
 def evaluate_anova(x,y):
     F_value,pvalue = f_classif(x,y)
     return F_value,pvalue
@@ -226,6 +233,45 @@ def bivariate_analysis_cont_catg(cont_catg_list,df,target_name,sub_len,COUNTER,P
     return plt,COUNTER
 
 
+def bivariate_analysis_catg_cont(catg_cont_list,df,target_name,sub_len,COUNTER,PLOT_ROW_SIZE):
+
+    # print df.describe()
+    clean_catg_cont_list = clean_str_list(df,catg_cont_list)
+    print clean_catg_cont_list
+    clean_df = df.dropna()
+
+
+
+    for col in clean_catg_cont_list:
+
+        col_classes =df[target_name].unique()
+
+        summary = clean_df[col].describe()
+        # print summary
+        count = summary[0]
+        mean = summary[1]
+        std = summary[2]
+
+        plt.subplot(PLOT_ROW_SIZE,PLOT_COLUMNS_SIZE,COUNTER)
+        plt.title("mean "+str(np.float32(mean))+" std "+str(np.float32(std)),fontsize=10)
+
+        x = [np.array(clean_df[clean_df[target_name]==i][col]) for i in col_classes]
+        y = np.float32(clean_df[target_name])
+
+        # print y
+        print np.array(clean_df[col]).reshape(-1,1).shape
+
+        f_value,p_val = evaluate_anova(np.array(clean_df[col]).reshape(-1,1),y)
+        print f_value,p_val
+        #
+        plt.xlabel(target_name+"\n f_value: "+str(np.float32(f_value[0]))+" / p_val: "+str(p_val[0]), fontsize=10)
+        plt.ylabel(col, fontsize=10)
+        plt.boxplot(x)
+
+        COUNTER +=1
+
+    return plt,COUNTER
+
 
 
 def plot(data_input,target_name="",categorical_name=[],bin_size="auto",bar_width=0.2,wspace=0.5,hspace=0.8):
@@ -252,6 +298,7 @@ def plot(data_input,target_name="",categorical_name=[],bin_size="auto",bar_width
         plot,count =  bivariate_analysis_cont_cont(cont_cont_list,data_input,target_name,subplot,COUNTER,PLOT_ROW_SIZE)
         plot,count =  bivariate_analysis_catg_catg(catg_catg_list,data_input,target_name,subplot,count,PLOT_ROW_SIZE,bin_size=bin_size)
         plot,count =  bivariate_analysis_cont_catg(cont_catg_list,data_input,target_name,subplot,count,PLOT_ROW_SIZE)
+        plot,count =  bivariate_analysis_catg_cont(catg_cont_list,data_input,target_name,subplot,count,PLOT_ROW_SIZE)
 
         plot.show()
         #The DataFrame is converted to numpy array
@@ -266,7 +313,12 @@ def plot(data_input,target_name="",categorical_name=[],bin_size="auto",bar_width
 
 col = ['ID', 'Applicant_Gender', 'Applicant_Occupation', 'Applicant_Qualification', 'Manager_Status', 'Manager_Gender', 'Manager_Num_Application', 'Manager_Business', 'Manager_Business2', 'Business_Sourced', 'App_age', 'Manager_age']
 
-plot(df,"App_age",['ID', 'Applicant_Gender', 'Applicant_Occupation', 'Applicant_Qualification', 'Manager_Status', 'Manager_Gender','Business_Sourced'])
+# plot(df,"Business_Sourced",['ID', 'Applicant_Gender', 'Applicant_Occupation', 'Applicant_Qualification', 'Manager_Status', 'Manager_Gender','Business_Sourced'])
 
 
-# plot(df,"Walc",["ID","Sex","Age","Address","Famsize","Pstatus","Medu","Fedu","Mjob","Fjob","Guardian","Traveltime","Studytime","Failures","Schoolsup","Famsup","Activities","Nursery","Higher","Internet","Romantic","Famrel","Freetime","Goout","Health","Absences","Grade","Walc"])
+# plot(df,"Walc",["ID","Sex","Age","Address","Famsize","Pstatus","Medu","Fedu","Mjob","Fjob","Guardian","Failures","Schoolsup","Famsup","Activities","Nursery","Higher","Internet","Romantic","Famrel","Goout","Health","Grade","Walc"])
+
+plot(df,"Survived",['PassengerId', 'Pclass','Sex','SibSp' ,'Parch',
+ 'Ticket', 'Cabin' ,'Embarked'])
+# col = ['PassengerId' 'Survived' 'Pczlass' 'Name' 'Sex' 'Age' 'SibSp' 'Parch'
+#  'Ticket' 'Fare' 'Cabin' 'Embarked']
