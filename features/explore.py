@@ -60,7 +60,7 @@ def clean_str_list(df,lst):
 
 
 #Univariate analysis for continuous variables is done using histograms and graph summary.
-def univariate_analysis_continous(cont_list,df,sub,COUNTER,bin_size,PLOT_ROW_SIZE):
+def univariate_analysis_continous(cont_list,df,sub,COUNTER,bin_size,PLOT_ROW_SIZE,PLOT_COLUMNS_SIZE):
 
     clean_cont_list = clean_str_list(df,cont_list)
     for col in cont_list:
@@ -89,7 +89,7 @@ def get_catg_info(df,col):
 
 
 #Univariate analysis for categotical variables is done using histograms and graph summary.
-def univariate_analysis_categorical(catg_list,df,sub_len,COUNTER,bar_width,PLOT_ROW_SIZE):
+def univariate_analysis_categorical(catg_list,df,sub_len,COUNTER,bar_width,PLOT_ROW_SIZE,PLOT_COLUMNS_SIZE):
 
     clean_catg_list = clean_str_list(df,catg_list)
 
@@ -127,6 +127,12 @@ def total_subplots(df,lst):
     total = [len(clean_str_list(clean_df,i)) for i in lst]
     return sum(total)
 
+#This function returns new categotical list after removing drop values if in case they are written in both drop and categorical_name list.
+def remove_drop_from_catglist(drop,categorical_name):
+    for col in drop:
+        if col in categorical_name:
+            categorical_name.remove(col)
+    return categorical_name
 def plot(data_input,categorical_name=[],drop=[],PLOT_COLUMNS_SIZE = 4,bin_size=20,bar_width=0.2,wspace=0.5,hspace=0.8):
 
     """
@@ -149,10 +155,10 @@ def plot(data_input,categorical_name=[],drop=[],PLOT_COLUMNS_SIZE = 4,bin_size=2
     bin_size : int ;default="auto"
             Number of bins for the histogram displayed in the categorical vs categorical category.
 
-    wspace : int ;default = 0.5
+    wspace : float32 ;default = 0.5
             Horizontal padding between subplot on the display window.
 
-    hspace : int ;default = 0.5
+    hspace : float32 ;default = 0.5
             Vertical padding between subplot on the display window.
 
     -----------
@@ -166,6 +172,8 @@ def plot(data_input,categorical_name=[],drop=[],PLOT_COLUMNS_SIZE = 4,bin_size=2
         #To drop user specified columns.
         if is_present(columns_name,drop):
             data_input = data_input.drop(drop,axis=1)
+            columns_name = data_input.columns.values
+            categorical_name = remove_drop_from_catglist(drop,categorical_name)
         else:
             raise ValueError("Couldn't find it in the input Dataframe!")
 
@@ -182,8 +190,8 @@ def plot(data_input,categorical_name=[],drop=[],PLOT_COLUMNS_SIZE = 4,bin_size=2
             total = PLOT_COLUMNS_SIZE
         PLOT_ROW_SIZE = ceil(float(total)/PLOT_COLUMNS_SIZE)
 
-        plot,count = univariate_analysis_continous(cont_list,data_input,total,COUNTER,bin_size,PLOT_ROW_SIZE)
-        plot,count = univariate_analysis_categorical(catg_list,data_input,total,count,bar_width,PLOT_ROW_SIZE)
+        plot,count = univariate_analysis_continous(cont_list,data_input,total,COUNTER,bin_size,PLOT_ROW_SIZE,PLOT_COLUMNS_SIZE)
+        plot,count = univariate_analysis_categorical(catg_list,data_input,total,count,bar_width,PLOT_ROW_SIZE,PLOT_COLUMNS_SIZE)
 
         fig.subplots_adjust(bottom=0.08,left = 0.05,right=0.97,top=0.93,wspace = wspace,hspace = hspace)
         plot.show()
@@ -195,13 +203,15 @@ def plot(data_input,categorical_name=[],drop=[],PLOT_COLUMNS_SIZE = 4,bin_size=2
 
 col = ['ID', 'Office_PIN', 'Application_Receipt_Date', 'Applicant_City_PIN', 'Applicant_Gender', 'Applicant_BirthDate', 'Applicant_Marital_Status', 'Applicant_Occupation', 'Applicant_Qualification', 'Manager_DOJ', 'Manager_Joining_Designation', 'Manager_Current_Designation', 'Manager_Grade', 'Manager_Status', 'Manager_Gender', 'Manager_DoB', 'Manager_Num_Application', 'Manager_Num_Coded', 'Manager_Business', 'Manager_Num_Products', 'Manager_Business2', 'Manager_Num_Products2', 'Business_Sourced']
 
-# print df.columns.values.tolist()
-# ['ID', 'Applicant_Gender', 'Applicant_Occupation', 'Applicant_Qualification', 'Manager_Status', 'Manager_Gender', 'Manager_Num_Application', 'Manager_Business', 'Manager_Business2', 'Business_Sourced', 'App_age', 'Manager_age'
 
-plot(df)
+col = ['ID', 'Applicant_Gender', 'Applicant_Occupation', 'Applicant_Qualification', 'Manager_Status', 'Manager_Gender', 'Manager_Num_Application', 'Manager_Business', 'Manager_Business2', 'Business_Sourced', 'App_age', 'Manager_age']
+
+# plot(df,"Business_Sourced",['ID', 'Applicant_Gender', 'Applicant_Occupation', 'Applicant_Qualification', 'Manager_Status', 'Manager_Gender','Business_Sourced'],PLOT_COLUMNS_SIZE=4,bin_size=10)
 
 
-# print df["Manager_Status"].value_counts()
-# print type(df["Manager_Status"].value_counts())
-# print df["Manager_Status"].unique()
-# print type(df["Manager_Status"].unique())
+plot(df,["ID","Sex","Age","Address","Famsize","Pstatus","Medu","Fedu","Mjob","Fjob","Guardian","Failures","Schoolsup","Famsup","Activities","Nursery","Higher","Internet","Romantic","Famrel","Goout","Health","Grade","Walc"],drop=["ID","Fjob","Guardian"],PLOT_COLUMNS_SIZE=3,bin_size=10,bar_width=1.0,wspace=1.0,hspace=1.0)
+
+# plot(df,"Survived",['PassengerId', 'Pclass','Sex','SibSp' ,'Parch',
+#  'Ticket', 'Cabin' ,'Embarked'])
+# col = ['PassengerId' 'Survived' 'Pczlass' 'Name' 'Sex' 'Age' 'SibSp' 'Parch'
+#  'Ticket' 'Fare' 'Cabin' 'Embarked']

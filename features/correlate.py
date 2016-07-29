@@ -6,15 +6,8 @@ from sklearn.feature_selection import chi2
 from sklearn.feature_selection import f_classif
 from math import *
 plt.style.use('ggplot')
-# df = pd.read_csv("train_new.csv")
-# df = pd.read_csv("train.csv")
-# df = pd.read_csv("Train_75Dkybb.csv")
-df = pd.read_csv("Train_pjb2QcD.csv")
-
 
 fig = plt.figure()
-
-
 COUNTER = 1
 
 #Return the category dictionary,categorical variables list and continuous list for every column in dataframe.
@@ -55,7 +48,7 @@ def is_present(columns_name,categorical_name):
     if len(ls)==0:
         return True
     else:
-        raise ValueError(i+" is not present as a column in the data,Please check the name")
+        raise ValueError(str(ls)+" is not present as a column in the data,Please check the name")
 
 #Function returns list of columns with non-numeric data.
 def clean_str_list(df,lst):
@@ -237,6 +230,13 @@ def total_subplots(df,lst):
     total = [len(clean_str_list(clean_df,i)) for i in lst]
     return sum(total)
 
+# This function returns new categotical list after removing drop values if in case they are written in both drop and categorical_name list.
+def remove_drop_from_catglist(drop,categorical_name):
+    for col in drop:
+        if col in categorical_name:
+            categorical_name.remove(col)
+    return categorical_name
+
 def plot(data_input,target_name="",categorical_name=[],drop=[],PLOT_COLUMNS_SIZE = 4,bin_size="auto",wspace=0.5,hspace=0.8):
     """
     This is the main function to give Bivariate analysis between the target variable and the input features.
@@ -270,6 +270,7 @@ def plot(data_input,target_name="",categorical_name=[],drop=[],PLOT_COLUMNS_SIZE
     -----------
 
     """
+
     if type(data_input).__name__ == "DataFrame" :
 
         # Column names
@@ -278,6 +279,9 @@ def plot(data_input,target_name="",categorical_name=[],drop=[],PLOT_COLUMNS_SIZE
         #To drop user specified columns.
         if is_present(columns_name,drop):
             data_input = data_input.drop(drop,axis=1)
+            columns_name = data_input.columns.values
+            categorical_name = remove_drop_from_catglist(drop,categorical_name)
+
         else:
             raise ValueError("Couldn't find it in the input Dataframe!")
 
@@ -301,7 +305,7 @@ def plot(data_input,target_name="",categorical_name=[],drop=[],PLOT_COLUMNS_SIZE
         plot,count =  bivariate_analysis_cont_catg(cont_catg_list,data_input,target_name,total,count,PLOT_ROW_SIZE,PLOT_COLUMNS_SIZE)
         plot,count =  bivariate_analysis_catg_cont(catg_cont_list,data_input,target_name,total,count,PLOT_ROW_SIZE,PLOT_COLUMNS_SIZE)
 
-        fig.subplots_adjust(bottom=0.08,left = 0.05,right=0.97,top=0.93,wspace = 0.28,hspace = 0.66)
+        fig.subplots_adjust(bottom=0.08,left = 0.05,right=0.97,top=0.93,wspace = wspace,hspace = hspace)
         plot.show()
 
     else:
@@ -309,9 +313,17 @@ def plot(data_input,target_name="",categorical_name=[],drop=[],PLOT_COLUMNS_SIZE
 
 
 
+
+
+# df = pd.read_csv("train_new.csv")
+# df = pd.read_csv("train.csv")
+# df = pd.read_csv("Train_75Dkybb.csv")
+df = pd.read_csv("Train_pjb2QcD.csv")
+
+
 col = ['ID', 'Applicant_Gender', 'Applicant_Occupation', 'Applicant_Qualification', 'Manager_Status', 'Manager_Gender', 'Manager_Num_Application', 'Manager_Business', 'Manager_Business2', 'Business_Sourced', 'App_age', 'Manager_age']
 
-plot(df,"Business_Sourced",['ID', 'Applicant_Gender', 'Applicant_Occupation', 'Applicant_Qualification', 'Manager_Status', 'Manager_Gender','Business_Sourced'],PLOT_COLUMNS_SIZE=4,bin_size=10)
+plot(df,"Business_Sourced",['ID','Applicant_Gender', 'Applicant_Occupation', 'Applicant_Qualification', 'Manager_Status', 'Manager_Gender','Business_Sourced'],drop=["ID","Applicant_Occupation"],PLOT_COLUMNS_SIZE=4,bin_size=10)
 
 
 # plot(df,"Walc",["ID","Sex","Age","Address","Famsize","Pstatus","Medu","Fedu","Mjob","Fjob","Guardian","Failures","Schoolsup","Famsup","Activities","Nursery","Higher","Internet","Romantic","Famrel","Goout","Health","Grade","Walc"])
