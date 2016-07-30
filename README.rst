@@ -1,8 +1,7 @@
 visualize\_ML
 =============
 
-visualize\_ML is a python package made to visualize some of the steps
-involved while dealing with a Machine Learning problem.
+visualize\_ML is a python package made to visualize some of the steps involved while dealing with a Machine Learning problem. It is build on libraries like matplotlib for visualization and sklearn,scipy for statistical computations.
 
 Table of content:
 ~~~~~~~~~~~~~~~~~
@@ -227,7 +226,7 @@ Contribute
 If you want to contribute and add new feature feel free to send Pull
 request `here`_
 
-To report any bugs or request new features, head over to the Issues page
+This project is still under development so to report any bugs or request new features, head over to the Issues page
 
 Licence
 -------
