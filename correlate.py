@@ -317,3 +317,28 @@ def plot(data_input,target_name="",categorical_name=[],drop=[],PLOT_COLUMNS_SIZE
 
     else:
         raise ValueError("Make sure input data is a Dataframe.")
+
+
+
+
+
+# df = pd.read_csv("train_new.csv")
+# df = pd.read_csv("train.csv")
+# df = pd.read_csv("Train_75Dkybb.csv")
+df = pd.read_csv("train_black.csv")
+
+# print df.columns.values.tolist()
+col = ['User_ID', 'Product_ID', 'Gender', 'Age', 'Occupation', 'City_Category', 'Stay_In_Current_City_Years', 'Marital_Status', 'Product_Category_1', 'Product_Category_2', 'Product_Category_3', 'Purchase']
+
+plot(df,'Purchase',['User_ID','Age','Product_ID', 'Occupation', 'City_Category','Marital_Status', 'Product_Category_1', 'Product_Category_2', 'Product_Category_3'],drop=["User_ID"],bin_size=10)
+# col = ['ID', 'Applicant_Gender', 'Applicant_Occupation', 'Applicant_Qualification', 'Manager_Status', 'Manager_Gender', 'Manager_Num_Application', 'Manager_Business', 'Manager_Business2', 'Business_Sourced', 'App_age', 'Manager_age']
+#
+# plot(df,"Business_Sourced",['ID','Applicant_Gender', 'Applicant_Occupation', 'Applicant_Qualification', 'Manager_Status', 'Manager_Gender','Business_Sourced'],drop=["ID","Applicant_Occupation"],PLOT_COLUMNS_SIZE=4,bin_size=10)
+
+
+# plot(df,"Walc",["ID","Sex","Age","Address","Famsize","Pstatus","Medu","Fedu","Mjob","Fjob","Guardian","Failures","Schoolsup","Famsup","Activities","Nursery","Higher","Internet","Romantic","Famrel","Goout","Health","Grade","Walc"])
+
+# plot(df,"Survived",['PassengerId', 'Pclass','Sex','SibSp' ,'Parch',
+#  'Ticket', 'Cabin' ,'Embarked'])
+# col = ['PassengerId' 'Survived' 'Pczlass' 'Name' 'Sex' 'Age' 'SibSp' 'Parch'
+#  'Ticket' 'Fare' 'Cabin' 'Embarked']
