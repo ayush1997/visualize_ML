@@ -16,11 +16,6 @@ visualize_ML is a python package made to visualize some of the steps involved wh
 ## Requirement
 
 * python 2.x or python 3.x
-* matplotlib
-* pandas
-* sklearn
-* numpy
-* scipy
 
 ## Install
 Install it using pip
@@ -65,6 +60,8 @@ df = pd.read_csv("dataset/train.csv")
 explore.plot(df,["Survived","Pclass","Sex","SibSp","Ticket","Embarked"],drop=["PassengerId","Name"])
 ```
 ![Alt text](https://github.com/ayush1997/visualize_ML/blob/master/images/explore1.png?raw=true "Optional Title")
+
+see the [dataset](https://www.kaggle.com/c/titanic/data)
 
 **Note:** While plotting all the rows with **NaN** values and columns with **Character** values are removed only numeric data is plotted.
 
@@ -114,24 +111,25 @@ wspace | float32 (default = 0.5) |Horizontal padding between subplot on the disp
 hspace | float32 (default = 0.8) |Vertical padding between subplot on the display window.
 
 **Code Snippet**
-```
+```python
 /* The data set is taken from famous Titanic data(Kaggle)*/
-In [1]: import pandas as pd
-In [2]: from visualize_ML import relation
-In [3]: df = pd.read_csv("dataset/train.csv")
-In [4]: relation.plot(df,"Survived",["Survived","Pclass","Sex","SibSp","Ticket","Embarked"],drop=["PassengerId","Name"],bin_size=10)
+import pandas as pd
+from visualize_ML import relation
+df = pd.read_csv("dataset/train.csv")
+relation.plot(df,"Survived",["Survived","Pclass","Sex","SibSp","Ticket","Embarked"],drop=["PassengerId","Name"],bin_size=10)
 
 ```
 
 ![Alt text](https://github.com/ayush1997/visualize_ML/blob/master/images/relation1.png?raw=true "Optional Title")
 
+see the [dataset](https://www.kaggle.com/c/titanic/data)
 
 **Note:** While plotting all the rows with **NaN** values and columns with **Non numeric** values are removed only numeric data is plotted.Only categorical taget variable with string values are allowed.
 
 ## Contribute
 If you want to contribute and add new feature feel free to send Pull request [here](https://github.com/ayush1997/visualize_ML)
 
-To report any bugs or request new features, head over to the Issues page
+This project is still under development so to report any bugs or request new features, head over to the Issues page
 
 ## Licence
 Licensed under [The MIT License (MIT)](https://github.com/ayush1997/visualize_ML/blob/master/LICENSE.txt).
