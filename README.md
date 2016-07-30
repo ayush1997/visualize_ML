@@ -3,14 +3,14 @@
 visualize_ML is a python package made to visualize some of the steps involved while dealing with a Machine Learning problem. It is build on libraries like matplotlib for visualization and sklean,scipy for statistical computations.
 
 ### Table of content:
-* Requirements
-* Install
-* Let's code
-	* explore module
-	* relation module
-* contribute
-* Licence
-* Copyright
+* [Requirements](https://github.com/ayush1997/visualize_ML/#requirement)
+* [Install](https://github.com/ayush1997/visualize_ML/#install)
+* [Let's code](https://github.com/ayush1997/visualize_ML/#lets-code)
+	* [explore module](https://github.com/ayush1997/visualize_ML/#-explore-module)
+	* [relation module](https://github.com/ayush1997/visualize_ML/#-relation-module)
+* [contribute](https://github.com/ayush1997/visualize_ML/#contribute)
+* [Licence](https://github.com/ayush1997/visualize_ML/#licence)
+* [Copyright](https://github.com/ayush1997/visualize_ML/#copyright)
 
 
 ## Requirement
