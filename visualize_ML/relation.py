@@ -322,4 +322,4 @@ def plot(data_input,target_name="",categorical_name=[],drop=[],PLOT_COLUMNS_SIZE
 
 
 df = pd.read_csv("train.csv")
-plot(df,"Sex",["Survived","Pclass","Sex","SibSp","Ticket","Embarked"],drop=["PassengerId","Name"],bin_size=10)
+plot(df,"Survived",["Survived","Pclass","Sex","SibSp","Ticket","Embarked"],drop=["PassengerId","Name"],bin_size=10)
