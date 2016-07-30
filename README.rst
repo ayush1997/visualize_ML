@@ -4,10 +4,19 @@ visualize\_ML
 visualize\_ML is a python package made to visualize some of the steps
 involved while dealing with a Machine Learning problem.
 
-What to visialize
------------------
+Table of content:
+~~~~~~~~~~~~~~~~~
 
-ddc
+-  Requirements
+-  Install
+-  Let’s code
+
+   -  explore module
+   -  relation module
+
+-  contribute
+-  Licence
+-  Copyright
 
 Let’s Code
 ----------
@@ -73,13 +82,15 @@ descriptive statistics for them.
 
 **Code Snippet**
 
-::
+.. code :: python
 
     /* The data set is taken from famous Titanic data(Kaggle)*/
-    In [1]: import pandas as pd
-    In [2]: from visualize_ML import explore
-    In [3]: df = pd.read_csv("dataset/train.csv")
-    In [4]: explore.plot(df,["Survived","Pclass","Sex","SibSp","Ticket","Embarked"],drop=["PassengerId","Name"])
+    
+    import pandas as pd
+    from visualize_ML import explore
+    df = pd.read_csv("dataset/train.csv")
+    
+    explore.plot(df,["Survived","Pclass","Sex","SibSp","Ticket","Embarked"],drop=["PassengerId","Name"])
 
 .. figure:: /images/explore1.png?raw=true
    :alt: Optional Title
@@ -190,13 +201,14 @@ For more information on ANOVA test see
 
 **Code Snippet**
 
-::
+.. code :: python
 
     /* The data set is taken from famous Titanic data(Kaggle)*/
-    In [1]: import pandas as pd
-    In [2]: from visualize_ML import explore
-    In [3]: df = pd.read_csv("dataset/train.csv")
-    In [4]: explore.plot(df,"Survived",["Survived","Pclass","Sex","SibSp","Ticket","Embarked"],drop=["PassengerId","Name"],bin_size=10)
+    import pandas as pd
+    from visualize_ML import explore
+    df = pd.read_csv("dataset/train.csv")
+    
+    explore.plot(df,"Survived",["Survived","Pclass","Sex","SibSp","Ticket","Embarked"],drop=["PassengerId","Name"],bin_size=10)
 
 .. figure:: /images/relation1.png?raw=true
    :alt: Optional Title
@@ -208,3 +220,22 @@ see this example for better understanding
 **Note:** While plotting all the rows with **NaN** values and columns
 with **Non numeric** values are removed only numeric data is
 plotted.Only categorical taget variable with string values are allowed.
+
+Contribute
+----------
+
+If you want to contribute and add new feature feel free to send Pull
+request `here`_
+
+To report any bugs or request new features, head over to the Issues page
+
+Licence
+-------
+Licensed under `The MIT License (MIT)`_.
+
+Copyright
+---------
+ayush1997(c) 2016
+
+.. _here: https://github.com/ayush1997/visualize_ML
+.. _The MIT License (MIT): https://github.com/ayush1997/visualize_ML/blob/master/LICENSE.txt
