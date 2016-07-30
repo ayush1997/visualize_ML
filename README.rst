@@ -96,6 +96,7 @@ descriptive statistics for them.
 
    Graph made using explore module using matplotlib.
 
+see the [dataset](https://www.kaggle.com/c/titanic/data)
 
 **Note:** While plotting all the rows with **NaN** values and columns
 with **Character** values are removed only numeric data is plotted.
@@ -213,6 +214,7 @@ For more information on ANOVA test see
 
    Graph made using relation module using matplotlib.
 
+see the [dataset](https://www.kaggle.com/c/titanic/data)
 
 **Note:** While plotting all the rows with **NaN** values and columns
 with **Non numeric** values are removed only numeric data is
