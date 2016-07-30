@@ -11,10 +11,10 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 setup(
     name='visualize_ML',
 
-    version='0.1.1',
+    version='0.1.2',
 
     description='To visualize various processes involved in dealing with a Machine Learning problem.',
-    long_description='Helps to visualize processes such as Data Exploration and Predictive Models through different statistical graphs while dealing with a ML problem.',
+    long_description='Helps to visualize processes such as data exploration,analysis and featur selection through different statistical graphs while dealing with a ML problem.',
 
     # The project's main homepage.
     url='https://github.com/ayush1997/visualize_ML',
@@ -32,7 +32,7 @@ setup(
         'Development Status :: 3 - Alpha',
 
         # Indicate who your project is intended for
-        'Intended Audience :: Data Scientist',
+        'Intended Audience :: Science/Research',
         'Intended Audience :: Developers',
         'Topic :: Software Development :: Build Tools',
 
@@ -52,39 +52,11 @@ setup(
 
     keywords='visualization MachineLearning DataScience',
 
-    packages=find_packages(exclude=[]),
+    packages=['visualize_ML'],
 
 
-    install_requires=['scipy==0.14.1',"scikit-learn==0.17.1","pandas==0.18.1","numpy==1.11.1","matplotlib==1.4.2"],
+    install_requires=["scikit-learn==0.17.1","pandas==0.18.1","numpy==1.11.1","matplotlib==1.4.2"],
 
-    # List additional groups of dependencies here (e.g. development
-    # dependencies). You can install these using the following syntax,
-    # for example:
-    # $ pip install -e .[dev,test]
-    extras_require={
-        'dev': ['check-manifest'],
-        'test': ['coverage'],
-    },
 
-    # If there are data files included in your packages that need to be
-    # installed, specify them here.  If using Python 2.6 or less, then these
-    # have to be included in MANIFEST.in as well.
-    package_data={
-        'sample': ['package_data.dat'],
-    },
 
-    # Although 'package_data' is the preferred approach, in some case you may
-    # need to place data files outside of your packages. See:
-    # http://docs.python.org/3.4/distutils/setupscript.html#installing-additional-files # noqa
-    # In this case, 'data_file' will be installed into '<sys.prefix>/my_data'
-    data_files=[('my_data', ['data/data_file'])],
-
-    # To provide executable scripts, use entry points in preference to the
-    # "scripts" keyword. Entry points provide cross-platform support and allow
-    # pip to create the appropriate form of executable for the target platform.
-    entry_points={
-        'console_scripts': [
-            'sample=sample:main',
-        ],
-    },
 )

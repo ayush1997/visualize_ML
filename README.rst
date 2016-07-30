@@ -84,11 +84,11 @@ descriptive statistics for them.
 .. code :: python
 
     /* The data set is taken from famous Titanic data(Kaggle)*/
-    
+
     import pandas as pd
     from visualize_ML import explore
     df = pd.read_csv("dataset/train.csv")
-    
+
     explore.plot(df,["Survived","Pclass","Sex","SibSp","Ticket","Embarked"],drop=["PassengerId","Name"])
 
 .. figure:: /images/explore1.png?raw=true
@@ -96,7 +96,6 @@ descriptive statistics for them.
 
    Graph made using explore module using matplotlib.
 
-see this example for better understanding.
 
 **Note:** While plotting all the rows with **NaN** values and columns
 with **Character** values are removed only numeric data is plotted.
@@ -204,17 +203,16 @@ For more information on ANOVA test see
 
     /* The data set is taken from famous Titanic data(Kaggle)*/
     import pandas as pd
-    from visualize_ML import explore
+    from visualize_ML import relation
     df = pd.read_csv("dataset/train.csv")
-    
-    explore.plot(df,"Survived",["Survived","Pclass","Sex","SibSp","Ticket","Embarked"],drop=["PassengerId","Name"],bin_size=10)
+
+    relation.plot(df,"Survived",["Survived","Pclass","Sex","SibSp","Ticket","Embarked"],drop=["PassengerId","Name"],bin_size=10)
 
 .. figure:: /images/relation1.png?raw=true
    :alt: Optional Title
 
    Graph made using relation module using matplotlib.
 
-see this example for better understanding
 
 **Note:** While plotting all the rows with **NaN** values and columns
 with **Non numeric** values are removed only numeric data is

@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from scipy.stats import pearsonr
+from numpy import corrcoef
 import matplotlib.pyplot as plt
 from sklearn.feature_selection import chi2
 from sklearn.feature_selection import f_classif
@@ -66,7 +66,9 @@ def clean_str_list(df,lst):
 
 #Returns the Pearson Correlation Coefficient for the continous data columns.
 def pearson_correlation_cont_cont(x,y):
-    return pearsonr(x, y)
+
+    return corrcoef(x,y)
+
 
 # This function is for the bivariate analysis between two continous varibale.Plots scatter plots and shows the coeff for the data.
 def bivariate_analysis_cont_cont(cont_cont_list,df,target_name,sub_len,COUNTER,PLOT_ROW_SIZE,PLOT_COLUMNS_SIZE):
@@ -85,11 +87,11 @@ def bivariate_analysis_cont_cont(cont_cont_list,df,target_name,sub_len,COUNTER,P
         plt.subplot(PLOT_ROW_SIZE,PLOT_COLUMNS_SIZE,COUNTER)
         plt.title("mean "+str(np.float32(mean))+" std "+str(np.float32(std)),fontsize=10)
 
-        x = df[col]
-        y = np.float32(df[target_name])
+        x = clean_df[col]
+        y = np.float32(clean_df[target_name])
         corr = pearson_correlation_cont_cont(x,y)
 
-        plt.xlabel(col+"\n count "+str(count)+"\n Corr: "+str(np.float32(corr[0])), fontsize=10)
+        plt.xlabel(col+"\n count "+str(count)+"\n Corr: "+str(np.float32(corr[0][1])), fontsize=10)
         plt.ylabel(target_name, fontsize=10)
         plt.scatter(x,y)
 
@@ -170,7 +172,7 @@ def bivariate_analysis_cont_catg(cont_catg_list,df,target_name,sub_len,COUNTER,P
 
     for col in clean_cont_catg_list:
 
-        col_classes =df[col].unique()
+        col_classes =clean_df[col].unique()
 
         summary = clean_df[col].describe()
         count = summary[0]
@@ -306,7 +308,6 @@ def plot(data_input,target_name="",categorical_name=[],drop=[],PLOT_COLUMNS_SIZE
 
         PLOT_ROW_SIZE = ceil(float(total)/PLOT_COLUMNS_SIZE)
 
-        print catg_cont_list
         #Call various functions
         plot,count =  bivariate_analysis_cont_cont(cont_cont_list,data_input,target_name,total,COUNTER,PLOT_ROW_SIZE,PLOT_COLUMNS_SIZE)
         plot,count =  bivariate_analysis_catg_catg(catg_catg_list,data_input,target_name,total,count,PLOT_ROW_SIZE,PLOT_COLUMNS_SIZE,bin_size=bin_size)
@@ -318,8 +319,3 @@ def plot(data_input,target_name="",categorical_name=[],drop=[],PLOT_COLUMNS_SIZE
 
     else:
         raise ValueError("Make sure input data is a Dataframe.")
-
-
-
-df = pd.read_csv("train.csv")
-plot(df,"Survived",["Survived","Pclass","Sex","SibSp","Ticket","Embarked"],drop=["PassengerId","Name"],bin_size=10)
