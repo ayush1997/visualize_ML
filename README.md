@@ -2,6 +2,7 @@
 
 visualize_ML is a python package made to visualize some of the steps involved while dealing with a Machine Learning problem. It is build on libraries like matplotlib for visualization and sklean,scipy for statistical computations.
 
+[![PyPI version](https://badge.fury.io/py/visualize_ML.svg)](https://badge.fury.io/py/visualize_ML)
 ### Table of content:
 * [Requirements](https://github.com/ayush1997/visualize_ML/#requirement)
 * [Install](https://github.com/ayush1997/visualize_ML/#install)
