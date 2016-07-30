@@ -198,7 +198,7 @@ For more information on ANOVA test see
     In [3]: df = pd.read_csv("dataset/train.csv")
     In [4]: explore.plot(df,"Survived",["Survived","Pclass","Sex","SibSp","Ticket","Embarked"],drop=["PassengerId","Name"],bin_size=10)
 
-.. figure:: /images/explore1.png?raw=true
+.. figure:: /images/relation1.png?raw=true
    :alt: Optional Title
 
    Graph made using relation module using matplotlib.
