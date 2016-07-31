@@ -9,7 +9,8 @@ visualize_ML is a python package made to visualize some of the steps involved wh
 * [Let's code](https://github.com/ayush1997/visualize_ML/#lets-code)
 	* [explore module](https://github.com/ayush1997/visualize_ML/#-explore-module)
 	* [relation module](https://github.com/ayush1997/visualize_ML/#-relation-module)
-* [contribute](https://github.com/ayush1997/visualize_ML/#contribute)
+* [Contribute](https://github.com/ayush1997/visualize_ML/#contribute)
+* [Tasks To Do](https://github.com/ayush1997/visualize_ML/#tasks-to-do)
 * [Licence](https://github.com/ayush1997/visualize_ML/#licence)
 * [Copyright](https://github.com/ayush1997/visualize_ML/#copyright)
 
@@ -131,6 +132,12 @@ see the [dataset](https://www.kaggle.com/c/titanic/data)
 If you want to contribute and add new feature feel free to send Pull request [here](https://github.com/ayush1997/visualize_ML)
 
 This project is still under development so to report any bugs or request new features, head over to the Issues page
+
+## Tasks To Do
+- [ ] Make input compatible with other formats like Numpy.
+- [ ] Visualize best fit lines and decision boundaries for various models to make **Parameter Tuning** task easy.
+  
+	and many others!
 
 ## Licence
 Licensed under [The MIT License (MIT)](https://github.com/ayush1997/visualize_ML/blob/master/LICENSE.txt).
