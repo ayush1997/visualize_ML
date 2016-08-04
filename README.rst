@@ -99,7 +99,7 @@ descriptive statistics for them.
 see the [dataset](https://www.kaggle.com/c/titanic/data)
 
 **Note:** While plotting all the rows with **NaN** values and columns
-with **Character** values are removed only numeric data is plotted.
+with **Character** values are removed(except if values are True and False ) only numeric data is plotted.
 
 2) Feature Selection
 ~~~~~~~~~~~~~~~~~~~~

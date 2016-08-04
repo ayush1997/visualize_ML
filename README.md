@@ -20,6 +20,10 @@ visualize_ML is a python package made to visualize some of the steps involved wh
 * python 2.x or python 3.x
 
 ## Install
+Install dependencies needed for matplotlib
+
+	sudo apt-get build-dep python-matplotlib
+	
 Install it using pip
 
 	pip install visualize_ML
@@ -65,7 +69,7 @@ explore.plot(df,["Survived","Pclass","Sex","SibSp","Ticket","Embarked"],drop=["P
 
 see the [dataset](https://www.kaggle.com/c/titanic/data)
 
-**Note:** While plotting all the rows with **NaN** values and columns with **Character** values are removed only numeric data is plotted.
+**Note:** While plotting all the rows with **NaN** values and columns with **Character** values are removed(except if values are True and False ),only numeric data is plotted.
 
 ### 2) Feature Selection
 This is one of the challenging task to deal with for a ML task.Here we have to do **Bi-variate Analysis** to find out the relationship between two variables. Here, we look for association and disassociation between variables at a pre-defined significance level.

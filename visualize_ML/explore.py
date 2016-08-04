@@ -89,14 +89,23 @@ def univariate_analysis_categorical(catg_list,df,sub_len,COUNTER,bar_width,PLOT_
 
         summary = df[col].dropna().describe()
 
-        count = summary[0]
-        mean = summary[1]
-        std = summary[2]
-        count_50 = summary[5]
-        count_75 = summary[6]
+        # if len(summary)!=5:
+        #     raise ValueError(col+"has string values please Label Encode them")
+        if len(summary)!= 4:
+            count = summary[0]
+            mean = summary[1]
+            std = summary[2]
+            count_50 = summary[5]
+            count_75 = summary[6]
+            plt.title("mean "+str(np.float32(mean))+" std "+str(np.float32(std)),fontsize=12)
+            plt.xlabel(col+"\n count "+str(count)+"\n50%: "+str(count_50)+" 75%: "+str(count_75), fontsize=12)
+
+        else:
+            count = summary[0]
+            plt.xlabel(col+"\n count "+str(count), fontsize=12)
 
         plt.subplot(PLOT_ROW_SIZE,PLOT_COLUMNS_SIZE,COUNTER)
-        plt.title("mean "+str(np.float32(mean))+" std "+str(np.float32(std)),fontsize=12)
+
         x = df.dropna()[col].unique()
 
         y = get_catg_info(df.dropna(),col)
@@ -104,7 +113,6 @@ def univariate_analysis_categorical(catg_list,df,sub_len,COUNTER,bar_width,PLOT_
 
         labels = y/y.sum() * 100
 
-        plt.xlabel(col+"\n count "+str(count)+"\n50%: "+str(count_50)+" 75%: "+str(count_75), fontsize=12)
         plt.ylabel("Frequency", fontsize=12)
         plt.bar(x,y,width=bar_width)
 

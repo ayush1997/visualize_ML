@@ -294,6 +294,8 @@ def plot(data_input,target_name="",categorical_name=[],drop=[],PLOT_COLUMNS_SIZE
         else:
             raise ValueError("Couldn't find it in the input Dataframe!")
 
+        if target_name == "":
+            raise ValueError("Please mention a target variable")
 
         #Checks if the categorical_name are present in the orignal dataframe columns.
         categorical_is_present = is_present(columns_name,categorical_name)

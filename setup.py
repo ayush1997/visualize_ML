@@ -11,10 +11,10 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 setup(
     name='visualize_ML',
 
-    version='0.1.2',
+    version='0.2.2',
 
     description='To visualize various processes involved in dealing with a Machine Learning problem.',
-    long_description='Helps to visualize processes such as data exploration,analysis and featur selection through different statistical graphs while dealing with a ML problem.',
+    long_description=long_description,
 
     # The project's main homepage.
     url='https://github.com/ayush1997/visualize_ML',
@@ -55,7 +55,7 @@ setup(
     packages=['visualize_ML'],
 
 
-    install_requires=["scikit-learn==0.17.1","pandas==0.18.1","numpy==1.11.1","matplotlib==1.4.2"],
+    install_requires=["scikit-learn","pandas","numpy","matplotlib"],
 
 
 
