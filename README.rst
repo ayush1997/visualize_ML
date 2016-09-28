@@ -118,7 +118,7 @@ combination of variables and see relation between them.
 
 ::
 
-    visualize_ML.relation.plot(df,"Sex",["Survived","Pclass","Sex","SibSp","Ticket","Embarked"],drop=["PassengerId","Name"],bin_size=10)
+    visualize_ML.relation.plot(data_input,target_name="",categorical_name=[],drop=[],bin_size=10)
 
 **Continuous vs Continuous variables:** To do the Bi-variate analysis
 *scatter plots* are made as their pattern indicates the relationship

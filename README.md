@@ -23,7 +23,7 @@ visualize_ML is a python package made to visualize some of the steps involved wh
 Install dependencies needed for matplotlib
 
 	sudo apt-get build-dep python-matplotlib
-	
+
 Install it using pip
 
 	pip install visualize_ML
@@ -77,7 +77,7 @@ This is one of the challenging task to deal with for a ML task.Here we have to d
 **relation** module helps in visualizing the analysis done on various combination of variables and see relation between them.
 
 ## >>> relation module
-	visualize_ML.relation.plot(df,"Sex",["Survived","Pclass","Sex","SibSp","Ticket","Embarked"],drop=["PassengerId","Name"],bin_size=10)
+	visualize_ML.relation.plot(data_input,target_name="",categorical_name=[],drop=[],bin_size=10)
 
 **Continuous vs Continuous variables:** To do the Bi-variate analysis *scatter plots* are made as their pattern indicates the relationship between variables.
 To indicates the strength of relationship amongst them we use Correlation between them.
@@ -140,7 +140,7 @@ This project is still under development so to report any bugs or request new fea
 ## Tasks To Do
 - [ ] Make input compatible with other formats like Numpy.
 - [ ] Visualize best fit lines and decision boundaries for various models to make **Parameter Tuning** task easy.
-  
+
 	and many others!
 
 ## Licence
